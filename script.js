@@ -53,63 +53,68 @@ console.error = (function(oldFunction) {
 }(console.error.bind(console)));
 
 
-
 mapboxgl.accessToken = 'pk.eyJ1IjoiYWJtYXBzLW94YWdvbiIsImEiOiJjbG1zazJrNGcwNThlMnFvYndvZnFhdHk3In0.dnC_jPlnMcm-N9miVX_98w';
 
+
 var map = new mapboxgl.Map({
-  container: 'map',
-  attributionControl: false,
-  style: 'mapbox://styles/abmaps-oxagon/clmu25s9u01zw01r80r1ogozg',
-  center: [35.529260, 27.571190],
-  zoom: 13,
-  preserveDrawingBuffer: true,
-  projection: 'mercator'
-}).on('error', function(e) { 
-      console.error(e);  // For other errors, log them to the console
-  
+    container: 'map',
+    attributionControl: false,
+    style: 'mapbox://styles/abmaps-oxagon/clmu25s9u01zw01r80r1ogozg',
+    center: [35.529260, 27.571190],
+    zoom: 13,
+    preserveDrawingBuffer: true,
+    projection: 'mercator'
+}).on('error', function (e) {
+    console.error(e);  // For other errors, log them to the console
 });
 
-//please show a pin markeer at geojson features
-// add markers to map
-// the image in question is in root and is called green.jng
-geojson.features.forEach(function(marker) {
-  // create a DOM element for the marker
-  var el = document.createElement('div');
-  el.className = 'marker';
-  el.style.backgroundImage =
-    //'url(https://placekitten.com/g/' + marker.properties.iconSize.join('/') + '/)';
-    "url('green.png')";
-  el.style.width = marker.properties.iconSize[0] + 'px';
-  el.style.height = marker.properties.iconSize[1] + 'px';
+map.on('load', function () {
+    map.loadImage('green.png', function(error, image) {
+        if (error) throw error;
+        map.addImage('green-marker', image);
 
-  el.addEventListener('click', function() {
-    window.alert(marker.properties.message);
-  });
+        map.addSource('myGeoJSON', {
+            type: 'geojson',
+            data: geojson
+        });
 
-  // add marker to map
-  new mapboxgl.Marker(el)
-    .setLngLat(marker.geometry.coordinates)
-    .addTo(map);
+        map.addLayer({
+            id: 'imageMarkers',
+            type: 'symbol',
+            source: 'myGeoJSON',
+            layout: {
+                'icon-image': 'green-marker',
+                'icon-size': 0.5 // You can adjust the size here
+            }
+        });
+
+        map.addLayer({
+            id: 'myGeoJSONLayer',
+            type: 'circle',
+            source: 'myGeoJSON',
+            paint: {
+                'circle-radius': 10,
+                'circle-color': '#ff00ff'
+            }
+        });
+    });
+
+        // This is the new part
+        map.on('click', 'myGeoJSONLayer', function () {
+          navigator.clipboard.writeText('Hello World')
+          .then(() => {
+              console.log('Text successfully copied to clipboard');
+          })
+          .catch(err => {
+              console.error('Unable to copy text to clipboard', err);
+          });
+      });
+
+    map.on('mouseenter', 'myGeoJSONLayer', function () {
+        map.getCanvas().style.cursor = 'pointer';
+    });
+
+    map.on('mouseleave', 'myGeoJSONLayer', function () {
+        map.getCanvas().style.cursor = '';
+    });
 });
-
-// //add markers to map
-// geojson.features.forEach(function(marker) {
-//   // create a DOM element for the marker
-//   var el = document.createElement('div');
-//   el.className = 'marker';
-//   el.style.backgroundImage =
-//     //'url(https://placekitten.com/g/' + marker.properties.iconSize.join('/') + '/)';
-//     "url('data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEAYABgAAD//gA7Q1JFQVRPUjogZ2QtanBlZyB2MS4wICh1c2luZyBJSkcgSlBFRyB2NjIpLCBxdWFsaXR5ID0gNjUK/9sAQwALCAgKCAcLCgkKDQwLDREcEhEPDxEiGRoUHCkkKyooJCcnLTJANy0wPTAnJzhMOT1DRUhJSCs2T1VORlRAR0hF/9sAQwEMDQ0RDxEhEhIhRS4nLkVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVF/8AAEQgAHgAeAwEiAAIRAQMRAf/EAB8AAAEFAQEBAQEBAAAAAAAAAAABAgMEBQYHCAkKC//EALUQAAIBAwMCBAMFBQQEAAABfQECAwAEEQUSITFBBhNRYQcicRQygZGhCCNCscEVUtHwJDNicoIJChYXGBkaJSYnKCkqNDU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6g4SFhoeIiYqSk5SVlpeYmZqio6Slpqeoqaqys7S1tre4ubrCw8TFxsfIycrS09TV1tfY2drh4uPk5ebn6Onq8fLz9PX29/j5+v/EAB8BAAMBAQEBAQEBAQEAAAAAAAABAgMEBQYHCAkKC//EALURAAIBAgQEAwQHBQQEAAECdwABAgMRBAUhMQYSQVEHYXETIjKBCBRCkaGxwQkjM1LwFWJy0QoWJDThJfEXGBkaJicoKSo1Njc4OTpDREVGR0hJSlNUVVZXWFlaY2RlZmdoaWpzdHV2d3h5eoKDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uLj5OXm5+jp6vLz9PX29/j5+v/aAAwDAQACEQMRAD8ArrdWtqgbmUEA/KpB59OxqpL4uiifYLcjju3IqhDqYbR4g7oE2gLtGST6cViSWRvYWuxOFzIyyD+7wOfpQB28etx3MBeSKTsAid8+pPSr5tOBlSPYmvPdLvLkyGGNpYpN3OPT3rRbx/PBI0X2VHWM7Qd3JxQBqaRoNrldLDE/aDtZmXO1vTp+H1rb1H4c3cNrCkEfnKpHm7ZCS6DtjGev9a0vDvhgPPHfzT5jVyyRjnackZ/rXofQUAeFxaNFa3RgjtZLZ2wpaRSMj15rYX4Nq43m5zu54NerbY7hD5sauMkYYZp5GzABIHpQB//Z')";
-//   el.style.width = marker.properties.iconSize[0] + 'px';
-//   el.style.height = marker.properties.iconSize[1] + 'px';
-
-//   el.addEventListener('click', function() {
-//     window.alert(marker.properties.message);
-//   });
-
-//   // add marker to map
-//   new mapboxgl.Marker(el)
-//     .setLngLat(marker.geometry.coordinates)
-//     .addTo(map);
-// });
-

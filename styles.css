@@ -18,4 +18,7 @@ body {
   padding: 0;
   border: 10px solid black;
   box-shadow: 0 0 0 10px orange;
+  cursor: pointer;
 }
+
+
