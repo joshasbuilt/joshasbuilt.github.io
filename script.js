@@ -70,25 +70,24 @@ var map = new mapboxgl.Map({
 });
 
 
+// //add markers to map
+// geojson.features.forEach(function(marker) {
+//   // create a DOM element for the marker
+//   var el = document.createElement('div');
+//   el.className = 'marker';
+//   el.style.backgroundImage =
+//     //'url(https://placekitten.com/g/' + marker.properties.iconSize.join('/') + '/)';
+//     "url('data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEAYABgAAD//gA7Q1JFQVRPUjogZ2QtanBlZyB2MS4wICh1c2luZyBJSkcgSlBFRyB2NjIpLCBxdWFsaXR5ID0gNjUK/9sAQwALCAgKCAcLCgkKDQwLDREcEhEPDxEiGRoUHCkkKyooJCcnLTJANy0wPTAnJzhMOT1DRUhJSCs2T1VORlRAR0hF/9sAQwEMDQ0RDxEhEhIhRS4nLkVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVF/8AAEQgAHgAeAwEiAAIRAQMRAf/EAB8AAAEFAQEBAQEBAAAAAAAAAAABAgMEBQYHCAkKC//EALUQAAIBAwMCBAMFBQQEAAABfQECAwAEEQUSITFBBhNRYQcicRQygZGhCCNCscEVUtHwJDNicoIJChYXGBkaJSYnKCkqNDU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6g4SFhoeIiYqSk5SVlpeYmZqio6Slpqeoqaqys7S1tre4ubrCw8TFxsfIycrS09TV1tfY2drh4uPk5ebn6Onq8fLz9PX29/j5+v/EAB8BAAMBAQEBAQEBAQEAAAAAAAABAgMEBQYHCAkKC//EALURAAIBAgQEAwQHBQQEAAECdwABAgMRBAUhMQYSQVEHYXETIjKBCBRCkaGxwQkjM1LwFWJy0QoWJDThJfEXGBkaJicoKSo1Njc4OTpDREVGR0hJSlNUVVZXWFlaY2RlZmdoaWpzdHV2d3h5eoKDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uLj5OXm5+jp6vLz9PX29/j5+v/aAAwDAQACEQMRAD8ArrdWtqgbmUEA/KpB59OxqpL4uiifYLcjju3IqhDqYbR4g7oE2gLtGST6cViSWRvYWuxOFzIyyD+7wOfpQB28etx3MBeSKTsAid8+pPSr5tOBlSPYmvPdLvLkyGGNpYpN3OPT3rRbx/PBI0X2VHWM7Qd3JxQBqaRoNrldLDE/aDtZmXO1vTp+H1rb1H4c3cNrCkEfnKpHm7ZCS6DtjGev9a0vDvhgPPHfzT5jVyyRjnackZ/rXofQUAeFxaNFa3RgjtZLZ2wpaRSMj15rYX4Nq43m5zu54NerbY7hD5sauMkYYZp5GzABIHpQB//Z')";
+//   el.style.width = marker.properties.iconSize[0] + 'px';
+//   el.style.height = marker.properties.iconSize[1] + 'px';
 
-//add markers to map
-geojson.features.forEach(function(marker) {
-  // create a DOM element for the marker
-  var el = document.createElement('div');
-  el.className = 'marker';
-  el.style.backgroundImage =
-    //'url(https://placekitten.com/g/' + marker.properties.iconSize.join('/') + '/)';
-    "url('data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEAYABgAAD//gA7Q1JFQVRPUjogZ2QtanBlZyB2MS4wICh1c2luZyBJSkcgSlBFRyB2NjIpLCBxdWFsaXR5ID0gNjUK/9sAQwALCAgKCAcLCgkKDQwLDREcEhEPDxEiGRoUHCkkKyooJCcnLTJANy0wPTAnJzhMOT1DRUhJSCs2T1VORlRAR0hF/9sAQwEMDQ0RDxEhEhIhRS4nLkVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVF/8AAEQgAHgAeAwEiAAIRAQMRAf/EAB8AAAEFAQEBAQEBAAAAAAAAAAABAgMEBQYHCAkKC//EALUQAAIBAwMCBAMFBQQEAAABfQECAwAEEQUSITFBBhNRYQcicRQygZGhCCNCscEVUtHwJDNicoIJChYXGBkaJSYnKCkqNDU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6g4SFhoeIiYqSk5SVlpeYmZqio6Slpqeoqaqys7S1tre4ubrCw8TFxsfIycrS09TV1tfY2drh4uPk5ebn6Onq8fLz9PX29/j5+v/EAB8BAAMBAQEBAQEBAQEAAAAAAAABAgMEBQYHCAkKC//EALURAAIBAgQEAwQHBQQEAAECdwABAgMRBAUhMQYSQVEHYXETIjKBCBRCkaGxwQkjM1LwFWJy0QoWJDThJfEXGBkaJicoKSo1Njc4OTpDREVGR0hJSlNUVVZXWFlaY2RlZmdoaWpzdHV2d3h5eoKDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uLj5OXm5+jp6vLz9PX29/j5+v/aAAwDAQACEQMRAD8ArrdWtqgbmUEA/KpB59OxqpL4uiifYLcjju3IqhDqYbR4g7oE2gLtGST6cViSWRvYWuxOFzIyyD+7wOfpQB28etx3MBeSKTsAid8+pPSr5tOBlSPYmvPdLvLkyGGNpYpN3OPT3rRbx/PBI0X2VHWM7Qd3JxQBqaRoNrldLDE/aDtZmXO1vTp+H1rb1H4c3cNrCkEfnKpHm7ZCS6DtjGev9a0vDvhgPPHfzT5jVyyRjnackZ/rXofQUAeFxaNFa3RgjtZLZ2wpaRSMj15rYX4Nq43m5zu54NerbY7hD5sauMkYYZp5GzABIHpQB//Z')";
-  el.style.width = marker.properties.iconSize[0] + 'px';
-  el.style.height = marker.properties.iconSize[1] + 'px';
+//   el.addEventListener('click', function() {
+//     window.alert(marker.properties.message);
+//   });
 
-  el.addEventListener('click', function() {
-    window.alert(marker.properties.message);
-  });
-
-  // add marker to map
-  new mapboxgl.Marker(el)
-    .setLngLat(marker.geometry.coordinates)
-    .addTo(map);
-});
+//   // add marker to map
+//   new mapboxgl.Marker(el)
+//     .setLngLat(marker.geometry.coordinates)
+//     .addTo(map);
+// });
 
