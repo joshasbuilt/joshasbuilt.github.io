@@ -1,4 +1,3 @@
-mapboxgl.accessToken = 'pk.eyJ1IjoicGJyb2NrbWFubiIsImEiOiJjajgxbnlqbGg2enR4MnhxbXllaHYzOGNzIn0.mA9mk90HM6ePh0gQq_55yw';
 var geojson = {
   "type": "FeatureCollection",
   "features": [{
@@ -9,7 +8,7 @@ var geojson = {
       },
       "geometry": {
         "type": "Point",
-        "coordinates": [-66.324462890625, -16.024695711685304]
+        "coordinates": [35.529260, 27.571190]
       }
     },
     {
@@ -36,17 +35,43 @@ var geojson = {
     }
   ]
 };
+console.error = (function(oldFunction) { 
+  return function(error) {
+      if (typeof error.message === 'string') {
+          if(error.message.includes('high-color') || 
+             error.message.includes('space-color') || 
+             error.message.includes('star-intensity')) {
+              // Ignore or handle this error
+              console.warn('Ignoring error: ' + error.message);
+          } else {
+              oldFunction(error);
+          }
+      } else {
+          oldFunction(error);
+      }
+  };
+}(console.error.bind(console)));
+
+
+
+mapboxgl.accessToken = 'pk.eyJ1IjoiYWJtYXBzLW94YWdvbiIsImEiOiJjbG1zazJrNGcwNThlMnFvYndvZnFhdHk3In0.dnC_jPlnMcm-N9miVX_98w';
 
 var map = new mapboxgl.Map({
   container: 'map',
   attributionControl: false,
-  style: 'mapbox://styles/mapbox/streets-v9',
-  center: [-65.017, -16.457],
-  zoom: 5,
-  preserveDrawingBuffer: true
+  style: 'mapbox://styles/abmaps-oxagon/clmu25s9u01zw01r80r1ogozg',
+  center: [35.529260, 27.571190],
+  zoom: 13,
+  preserveDrawingBuffer: true,
+  projection: 'mercator'
+}).on('error', function(e) { 
+      console.error(e);  // For other errors, log them to the console
+  
 });
 
-// add markers to map
+
+
+//add markers to map
 geojson.features.forEach(function(marker) {
   // create a DOM element for the marker
   var el = document.createElement('div');
@@ -67,23 +92,3 @@ geojson.features.forEach(function(marker) {
     .addTo(map);
 });
 
-$('#downloadLink').click(function() {
-  // 2 following lines works but without dom elements
-  //var img = map.getCanvas().toDataURL('image/png');
-  //this.href = img;
-
-  html2canvas($('#map')[0], {
-      useCORS: true,
-      allowTaint: true
-    })
-    .then(function(canvas) {
-      var img = canvas.toDataURL('image/png');
-      var link = document.createElement('a');
-      link.href = img;
-      link.download = "map.png";
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-    });
-
-})
