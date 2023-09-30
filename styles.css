@@ -1,0 +1,41 @@
+/* Reset some default styling */
+body, ul {
+  margin: 0;
+  padding: 0;
+}
+
+/* Style header */
+header {
+  background-color: #f0f0f0;
+  padding: 10px;
+  text-align: center;
+}
+
+/* Style navigation bar */
+nav ul {
+  background-color: #333;
+  list-style-type: none;
+}
+
+nav ul li {
+  display: inline;
+  margin-right: 10px;
+}
+
+nav ul li a {
+  color: white;
+  text-decoration: none;
+}
+
+/* Style main content */
+main {
+  padding: 20px;
+}
+
+/* Style footer */
+footer {
+  background-color: #333;
+  color: white;
+  padding: 10px;
+  text-align: center;
+}
