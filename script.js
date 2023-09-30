@@ -69,6 +69,28 @@ var map = new mapboxgl.Map({
   
 });
 
+//please show a pin markeer at geojson features
+// add markers to map
+// the image in question is in root and is called green.jng
+geojson.features.forEach(function(marker) {
+  // create a DOM element for the marker
+  var el = document.createElement('div');
+  el.className = 'marker';
+  el.style.backgroundImage =
+    //'url(https://placekitten.com/g/' + marker.properties.iconSize.join('/') + '/)';
+    "url('green.png')";
+  el.style.width = marker.properties.iconSize[0] + 'px';
+  el.style.height = marker.properties.iconSize[1] + 'px';
+
+  el.addEventListener('click', function() {
+    window.alert(marker.properties.message);
+  });
+
+  // add marker to map
+  new mapboxgl.Marker(el)
+    .setLngLat(marker.geometry.coordinates)
+    .addTo(map);
+});
 
 // //add markers to map
 // geojson.features.forEach(function(marker) {
