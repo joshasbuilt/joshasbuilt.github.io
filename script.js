@@ -68,6 +68,8 @@ var map = new mapboxgl.Map({
     console.error(e);  // For other errors, log them to the console
 });
 
+
+
 map.on('load', function () {
     map.loadImage('green.png', function(error, image) {
         if (error) throw error;
@@ -99,6 +101,26 @@ map.on('load', function () {
         });
     });
 
+    map.addSource('w3w-grid', {
+      type: 'geojson',
+      data: {
+          type: 'FeatureCollection',
+          features: []
+      }
+  });
+
+  map.addLayer({
+      id: 'w3w-grid',
+      type: 'line',
+      source: 'w3w-grid',
+      layout: {},
+      paint: {
+          'line-color': '#777777',
+          'line-width': 1
+      }
+  });
+
+
         // This is the new part
         map.on('click', 'myGeoJSONLayer', function () {
           navigator.clipboard.writeText('Hello World')
@@ -117,4 +139,53 @@ map.on('load', function () {
     map.on('mouseleave', 'myGeoJSONLayer', function () {
         map.getCanvas().style.cursor = '';
     });
+});
+
+
+map.on('moveend', async function () {
+  if (map.getZoom() < 18) { // Add this check
+    return; // If the zoom level is less than 18, exit the function early
+  }
+
+  var bounds = map.getBounds();
+  var sw = bounds.getSouthWest();
+  var ne = bounds.getNorthEast();
+
+  console.log(sw, ne);  // Log the bounding box coordinates for verification
+
+  var url = `https://api.what3words.com/v3/grid-section?bounding-box=${sw.lat},${sw.lng},${ne.lat},${ne.lng}&key=7BCLI9JJ`;
+
+  console.log(url);  // Log the full request URL for verification
+
+  try {
+      let response = await fetch(url);
+
+      if (!response.ok) {
+          let errorMsg = await response.text();
+          console.error('Error response', response.status, errorMsg);
+          return;
+      }
+
+      let data = await response.json();
+      console.log(data);
+
+      // Correcting the structure of the data
+      if (data.lines) {
+          map.getSource('w3w-grid').setData({
+              type: 'FeatureCollection',
+              features: data.lines.map(line => ({
+                  type: 'Feature',
+                  geometry: {
+                      type: 'LineString',
+                      coordinates: [
+                          [line.start.lng, line.start.lat],
+                          [line.end.lng, line.end.lat]
+                      ]
+                  }
+              }))
+          });
+      }
+  } catch (error) {
+      console.error('Fetch error', error);
+  }
 });
